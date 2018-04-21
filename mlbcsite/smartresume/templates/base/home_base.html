@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+
+
+  <!-- CORE CSS-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="{% static 'material/css/materialize.min.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="{% static 'material/css//style.min.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+    <!-- Custome CSS-->    
+    <!-- <link href="../static/material/css/custom/custom.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="../static/material/css/layouts/page-center.css" type="text/css" rel="stylesheet" media="screen,projection"> -->
+
+  <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+  <link href="{% static 'material/js/plugins/prism/prism.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="{% static 'material/js/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+    <title>{% block title %}{{data.title}}{% endblock %}</title>
+    {% block 'head' %}
+    {% endblock %}
+</head>
+<body>
+	<nav>
+      <div class="nav-wrapper red">
+        <a href="#" class="blue-text">ML Based Career Service</font></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="/">Home</a></li>
+          <li><a href="/smartresume/about">About</a></li>
+          <li><a href="/smartresume/upload_file">Dashboard</a></li>
+        </ul>
+      </div>
+    </nav>
+    {% block 'content' %}
+    {% endblock %}
+    <footer class="page-footer">
+	    <div class="footer-copyright">
+        <div class="container">
+        <span>Copyright © 2018 <a class="grey-text text-lighten-4" target="_blank">Apha Beta Gamma</a> All rights reserved.
+        </span>
+        <span class="right"> Design and Developed by <a class="grey-text text-lighten-4">Apha Beta Gamma</a></span>
+        </div>
+      </div>
+    </footer>
+        {% block 'footer' %}{% endblock %}
+          <!-- ================================================
+	    Scripts
+	    ================================================ -->
+
+		  <!-- jQuery Library -->
+		  <script type="text/javascript" src="{% static 'material/js/plugins/jquery-1.11.2.min.js' %}"></script>
+		  <!--materialize js-->
+		  <script type="text/javascript" src="{% static 'material/js/materialize.min.js' %}"></script>
+		  <!--prism-->
+		  <script type="text/javascript" src="{% static 'material/js/plugins/prism/prism.js' %}"></script>
+		  <!--scrollbar-->
+		  <script type="text/javascript" src="{% static 'material/js/plugins/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+		  
+	      <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+	    <script type="text/javascript" src="{% static 'material/js/plugins.min.js' %}"></script>
+	    <!--custom-script.js - Add your own theme custom JS-->
+	    <script type="text/javascript" src="{% static 'material/js/custom-script.js' %}"></script>
+	</body>
+</html>
