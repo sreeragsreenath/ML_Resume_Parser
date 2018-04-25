@@ -87,9 +87,11 @@ class uploadmodeltos3(luigi.Task):
 		# client.create_bucket(Bucket=buckname,CreateBucketConfiguration={'LocationConstraint':'us-west-2'})
 		client.upload_file('model.pkl', buckname, 'model.pkl')
 
+#lskdjflskfdj
 if __name__=='__main__':
 	try:
-		luigi.run(['uploadmodeltos3', '--workers', '2',"--akey", "AKIAIJK62622CAZP7JZQ" ,"--skey", "f1pyKo3wCEQJ4jiPhAPwapRwWoLDTnvX1Zk/3RAg"])
+		luigi.run(['uploadmodeltos3', '--workers', '2',"--akey", "your id" ,"--skey", "ur key"])
+
 	except MissingParameterException:
 		print("Please provide Access Keys and Secret Access Keys")
 		sys.exit()
