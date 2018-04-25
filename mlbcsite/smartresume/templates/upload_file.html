@@ -4,12 +4,12 @@
 <div class="row">
 	<div class="col s12 m12 l12">
 		<div class="card-panel">
-			<h4 class="header2">Single File Upload</h4>
+			<h4 class="header2">Lyrics Generator</h4>
 			<div class="row">
 				<form action="/smartresume/upload_file" method="post" enctype=multipart/form-data>{% csrf_token %}
 					<div class="file-field input-field">
 						<div class="btn">
-							<span>Upload File</span>
+							<span>Select Genre</span>
 							<input type="file" name="file">
 						</div>
 						<div class="file-path-wrapper">
@@ -18,7 +18,7 @@
 					</div>
 					<div class="row">
 						<div class="input-field col s12">
-							<button class="btn cyan waves-effect waves-light right" type="submit" name="action">Submit
+							<button class="btn cyan waves-effect waves-light right" type="submit" name="action">Generate
 								<i class="mdi-content-send right"></i>
 							</button>
 						</div>
@@ -28,5 +28,8 @@
 		</div>
 	</div>
 </div>
+{{% if result == True %}
+    {{profiles}}
+{% endif %}}
 
 {% endblock %}

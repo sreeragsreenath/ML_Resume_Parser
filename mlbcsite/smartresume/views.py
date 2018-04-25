@@ -2,6 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django import forms
 import PyPDF2
+import nltk
+from textblob import TextBlob
+import pickle
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 
 class UploadFileForm(forms.Form):
@@ -23,7 +27,9 @@ def about(request):
 
 def upload_file(request):
 	context = {'lol': 'latest_question_list'}
+	context['result'] = False
 	if request.method == 'POST':
+		profiles = ["Software Developer","Web Developer","Java Developer","System Administrator","Software Engineer","QA Engineer","PHP Developer","Senior Software Engineer","Programmer","IT Specialist","Web Designer","Android Developer","C++ Software Developer","Python Developers","Data Analyst"]
 		myfile = request.FILES['file']
 		print(myfile)
 		pdfFileObj = myfile
@@ -32,6 +38,24 @@ def upload_file(request):
 		pageObj = pdfReader.getPage(0)  
 		text = pageObj.extractText()
 		print(text)
+		url = "f.pkl"
+		cl = pickle.load(open(url, 'rb'))
+		#-----------------------------------------------
+		blob = TextBlob(text)
+		blob.noun_phrases
+		text = ' '.join(blob.noun_phrases)
+		text
+		#---------------------------------------------------
+		print(cl.classify(text))
+		prob_dist = cl.prob_classify(text)
+		rank = []
+		for k in profiles:
+		    ar = [k,prob_dist.prob(k)]
+		    rank.append(ar)
+		rank = sorted(rank, key=lambda x: x[1],reverse=True)
+		print(rank)
+		context['result'] = True
+		context['profiles'] = rank
 		return render(request, 'upload_file.html', context)
 	else:
 		form = UploadFileForm()
