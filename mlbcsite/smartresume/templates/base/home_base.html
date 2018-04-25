@@ -14,6 +14,8 @@
   <link href="../static/material/css/layouts/page-center.css" type="text/css" rel="stylesheet" media="screen,projection"> -->
 
   <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+   <!-- jQuery Library -->
+  <script type="text/javascript" src="{% static 'material/js/plugins/jquery-1.11.2.min.js' %}"></script>
   <link href="{% static 'material/js/plugins/prism/prism.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
   <link href="{% static 'material/js/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
     <title>{% block title %}{{data.title}}{% endblock %}</title>
@@ -21,14 +23,21 @@
     {% endblock %}
 </head>
 <body>
+  <ul id="dropdown1" class="dropdown-content">
+    <li><a href="/userLogin">Login</a></li>
+    <li class="divider"></li>
+    <li><a href="/register">Register</a></li>
+  </ul>
 	<nav>
       <div class="nav-wrapper red accent-1">
         <ul class="left">                      
         <li><h1 class="logo-wrapper"><a href="/smartresume/index" class="brand-logo darken-1">ML Based Career Service</a></h1></li></ul>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="/smartresume/index">Home</a></li>
-          <li><a href="/smartresume/about">About</a></li>
-          <li><a href="/smartresume/upload_file">Dashboard</a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/upload_file">Dashboard</a></li>
+          <!-- <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Login / Register<i class="material-icons right">arrow_drop_down</i></a></li> -->
+          <li><a href="/userLogin">Login / Register</a></li>
         </ul>
       </div>
     </nav>
@@ -43,13 +52,12 @@
         </div>
       </div>
     </footer>
-        {% block 'footer' %}{% endblock %}
+        
           <!-- ================================================
 	    Scripts
 	    ================================================ -->
 
-		  <!-- jQuery Library -->
-		  <script type="text/javascript" src="{% static 'material/js/plugins/jquery-1.11.2.min.js' %}"></script>
+		 
 		  <!--materialize js-->
 		  <script type="text/javascript" src="{% static 'material/js/materialize.min.js' %}"></script>
 		  <!--prism-->
@@ -61,5 +69,17 @@
 	    <script type="text/javascript" src="{% static 'material/js/plugins.min.js' %}"></script>
 	    <!--custom-script.js - Add your own theme custom JS-->
 	    <script type="text/javascript" src="{% static 'material/js/custom-script.js' %}"></script>
+
+      {% block 'footer' %}{% endblock %}
+
+      <script type="text/javascript">
+
+        // $(document).ready(function(){
+        //     $(".dropdown-content.select-dropdown li");
+      $(document).ready(function(){
+        $(".dropdown-trigger").dropdown({ hover: false });
+         $('.parallax').parallax();
+      });
+    </script>
 	</body>
 </html>
