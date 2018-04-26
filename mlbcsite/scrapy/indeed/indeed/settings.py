@@ -8,7 +8,8 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-
+import datetime
+now = datetime.datetime.now()
 BOT_NAME = 'indeed'
 
 SPIDER_MODULES = ['indeed.spiders']
@@ -21,6 +22,14 @@ NEWSPIDER_MODULE = 'indeed.spiders'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
+ITEM_PIPELINE = {
+'scrapy.pipelines.files.S3FilesStore': 1
+}
+
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY= ''
+
+FEED_URI='s3://finalprojectabg/scraped/scrap_'+str(now.strftime("%Y-%m-%d_%H:%M:%S"))+'.json'
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 

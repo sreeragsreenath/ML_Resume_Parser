@@ -3,16 +3,18 @@ from scrapy.selector import Selector
 import json
 import re
 
-position = "data analyst"
-location = "CA"
-position = position.replace(" ", "+")
-location = location.replace(" ", "%2C+")
 
 class IndeedSpider(scrapy.Spider):
     name = "indeed"
+
     
 
     def start_requests(self):
+        position = self.position
+        location = self.location
+        position = position.replace(" ", "+")
+        location = location.replace(" ", "%2C+")
+
         urls = [
             'https://www.indeed.com/jobs?q='+position+'&l='+location,
         ]
