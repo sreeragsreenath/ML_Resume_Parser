@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login ,logout
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -50,6 +50,8 @@ def upload_file(request):
 
 def userLogin(request):
 	context = {'lol': 'latest_question_list'}
+	context['message'] = ''
+	context['existingUser'] = ''
 	if request.method == 'POST':
 		print("Im in")
 		username = request.POST.get('inputEmail')
@@ -57,12 +59,16 @@ def userLogin(request):
 		print("username :",username,"password : ",password)
 		user = authenticate(request, username=username, password=password)
 		print("user : ",user)
+		context = {'user': user}
 		if user is not None:
 			login(request, user)
+			request.session['member_id'] = user.id
 			return render(request, 'upload_file.html', context)
 		else:
-			print("Invalid credential")
+			context['message'] = 'Username or Password not correct'
+			render(request, 'userLogin.html', context)
 			# messages.error(request,'username or password not correct')
+
 	return render(request, 'userLogin.html', context)
 
 def register(request):
@@ -73,9 +79,21 @@ def register(request):
 		password = request.POST.get('inputPassword')
 		emailId = request.POST.get('emailId')
 		print("username :",username,"password : ",password)
-		user = User.objects.create_user(username,emailId, password)
-		print("user :",user,"  User Created ")
-		return render(request, 'userLogin.html', context)
+		try:
+			user = User.objects.create_user(username,emailId, password)
+			print("user :",user,"  User Created ")
+			return render(request, 'userLogin.html', context)
+		except:
+		    context['message'] = 'UserName already exist, please enter another UserName.'
+		# except IntegrityError as e:
+		#     # handle_runtime(re)
+		#     context['message'] = 'UserName already exist, please enter another UserName.'
+
 	return render(request, 'register.html', context)	
+
+def logout_view(request):
+	context = {'lol': 'latest_question_list'}
+	logout(request)
+	return render(request, 'index.html', context)
 
     
