@@ -1,11 +1,9 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 from django import forms
 import PyPDF2
-import nltk
-from textblob import TextBlob
-import pickle
-from django.contrib.staticfiles.templatetags.staticfiles import static
 
 
 class UploadFileForm(forms.Form):
@@ -25,11 +23,17 @@ def about(request):
 	context = {'lol': 'latest_question_list'}
 	return render(request, 'about.html', context)
 
+# def login(request):
+# 	context = {'lol': 'latest_question_list'}
+# 	return render(request, 'login.html', context)
+
+# def register(request):
+# 	context = {'lol': 'latest_question_list'}
+# 	return render(request, 'register.html', context)	
+
 def upload_file(request):
 	context = {'lol': 'latest_question_list'}
-	context['result'] = False
 	if request.method == 'POST':
-		profiles = ["Software Developer","Web Developer","Java Developer","System Administrator","Software Engineer","QA Engineer","PHP Developer","Senior Software Engineer","Programmer","IT Specialist","Web Designer","Android Developer","C++ Software Developer","Python Developers","Data Analyst"]
 		myfile = request.FILES['file']
 		print(myfile)
 		pdfFileObj = myfile
@@ -38,28 +42,40 @@ def upload_file(request):
 		pageObj = pdfReader.getPage(0)  
 		text = pageObj.extractText()
 		print(text)
-		url = "f.pkl"
-		cl = pickle.load(open(url, 'rb'))
-		#-----------------------------------------------
-		blob = TextBlob(text)
-		blob.noun_phrases
-		text = ' '.join(blob.noun_phrases)
-		text
-		#---------------------------------------------------
-		print(cl.classify(text))
-		prob_dist = cl.prob_classify(text)
-		rank = []
-		for k in profiles:
-		    ar = [k,prob_dist.prob(k)]
-		    rank.append(ar)
-		rank = sorted(rank, key=lambda x: x[1],reverse=True)
-		print(rank)
-		context['result'] = True
-		context['profiles'] = rank
 		return render(request, 'upload_file.html', context)
 	else:
 		form = UploadFileForm()
 	return render(request, 'upload_file.html', context)
 
+
+def userLogin(request):
+	context = {'lol': 'latest_question_list'}
+	if request.method == 'POST':
+		print("Im in")
+		username = request.POST.get('inputEmail')
+		password = request.POST.get('inputPassword')
+		print("username :",username,"password : ",password)
+		user = authenticate(request, username=username, password=password)
+		print("user : ",user)
+		if user is not None:
+			login(request, user)
+			return render(request, 'upload_file.html', context)
+		else:
+			print("Invalid credential")
+			# messages.error(request,'username or password not correct')
+	return render(request, 'userLogin.html', context)
+
+def register(request):
+	context = {'lol': 'latest_question_list'}
+	if request.method == 'POST':
+		print("Im in")
+		username = request.POST.get('inputEmail')
+		password = request.POST.get('inputPassword')
+		emailId = request.POST.get('emailId')
+		print("username :",username,"password : ",password)
+		user = User.objects.create_user(username,emailId, password)
+		print("user :",user,"  User Created ")
+		return render(request, 'userLogin.html', context)
+	return render(request, 'register.html', context)	
 
     
