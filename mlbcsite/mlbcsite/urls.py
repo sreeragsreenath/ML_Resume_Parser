@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-	path('smartresume/', include('smartresume.urls')),
+	path('', include('smartresume.urls')),
     path('admin/', admin.site.urls),
 ]
