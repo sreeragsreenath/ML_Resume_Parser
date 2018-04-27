@@ -145,3 +145,16 @@ def logout_view(request):
 
 # else:
 #     # Action if not existing
+def statsscrap(request):
+	context = {'test': 'latest_question_list'}
+	context['isResults'] = False
+	user= request.user
+	context['role'] = request.user.groups.all()[0]
+	return render(request, 'statsscrap.html', context)
+
+def statslocal(request):
+	context = {'test': 'latest_question_list'}
+	context['isResults'] = False
+	user= request.user
+	context['role'] = request.user.groups.all()[0]
+	return render(request, 'statslocal.html', context)

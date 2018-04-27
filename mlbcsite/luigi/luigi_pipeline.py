@@ -26,9 +26,45 @@ import sys
 import datetime
 from luigi.parameter import MissingParameterException
 
+import os
 
 
 
+class S3_DataIngestion(luigi.Task):
+	def requires(self):
+		return None
+
+	def run(self):
+		aws_access_key_id = "AKIAJX47MRD5AYURRMHA"
+		aws_secret_access_key = "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"
+
+		s3 = boto3.resource('s3')
+		buckname="finalprojectabg"
+		client = boto3.client('s3','us-west-2',aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
+		i = 0
+		for k in client.list_objects(Bucket=buckname)['Contents']:
+			if "scraped" in k['Key']:
+				print(k['Key'])
+				key = k['Key']
+				client.download_file(buckname, key, 'scraped/'+str(i)+".json")
+				i=i+1
+		q = pd.DataFrame()
+		u = 1
+		for k in os.listdir(os.getcwd()+"/scraped"):
+			if(u!=1):
+				print('scraped/'+str(k))
+				r = pd.read_json("./scraped/"+str(k), lines=True)
+				print(r)
+				q = q.append(r)
+				print(q)
+			else:
+				r = pd.read_json("./scraped/"+str(k), lines=True)
+				q=r.copy()
+			u=u+1
+		q.to_json(self.output().path , index=False)
+
+	def output(self):
+		return luigi.LocalTarget("online.json")
 
 class Train_DataIngestion(luigi.Task):
 	def requires(self):
@@ -46,10 +82,13 @@ class Train_DataIngestion(luigi.Task):
 class DataPreProcessing(luigi.Task):
 	
 	def requires(self):
-		return Train_DataIngestion()
+		yield Train_DataIngestion()
+		yield S3_DataIngestion()
+
 
 	def run(self):
 		fb = pd.read_csv(Train_DataIngestion().output().path)
+		f2 = pd.read_csv(S3_DataIngestion().output().path)
 		trainingData = fb
 		print("In Data Pre Processing")
 		profiles = ["Software Developer","Web Developer","Java Developer","System Administrator","Software Engineer","QA Engineer","PHP Developer","Senior Software Engineer","Programmer","IT Specialist","Web Designer","Android Developer","C++ Software Developer","Python Developers","Data Analyst"]
@@ -85,12 +124,12 @@ class uploadmodeltos3(luigi.Task):
 		buckname="finalprojectabg"
 		client = boto3.client('s3','us-west-2',aws_access_key_id=self.akey,aws_secret_access_key=self.skey)
 		# client.create_bucket(Bucket=buckname,CreateBucketConfiguration={'LocationConstraint':'us-west-2'})
-		client.upload_file('model.pkl', buckname, 'model.pkl')
+		# client.upload_file('model.pkl', buckname, 'model.pkl')
 
 #lskdjflskfdj
 if __name__=='__main__':
 	try:
-		luigi.run(['uploadmodeltos3', '--workers', '2',"--akey", "your id" ,"--skey", "ur key"])
+		luigi.run()
 
 	except MissingParameterException:
 		print("Please provide Access Keys and Secret Access Keys")

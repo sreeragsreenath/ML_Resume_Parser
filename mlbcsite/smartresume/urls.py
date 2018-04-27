@@ -9,5 +9,7 @@ urlpatterns = [
     path('upload_file', views.upload_file, name='upload_file'),
     path('userLogin', views.userLogin, name='userLogin'),
     path('register' , views.register, name='register'),
+    path('statslocal' , views.statslocal, name='statslocal'),
+    path('statsscrap' , views.statsscrap, name='statsscrap'),
     path('logout_view' , views.logout_view, name='logout_view')
 ]
