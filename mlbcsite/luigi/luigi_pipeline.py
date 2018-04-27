@@ -105,6 +105,8 @@ class DataPreProcessing(luigi.Task):
 		select_position2 = f2.loc[f2['Title'].isin(profiles)]
 		train2 = select_position2[['jobpost','Title']]
 
+
+		f2.to_json('../smartresume/static/data/processed/latest.json', orient="records")
 		train = train.append(train2)
 		cl = NaiveBayesClassifier(train.values)
 		cl_model = cl
@@ -135,7 +137,7 @@ class uploadmodeltos3(luigi.Task):
 		buckname="finalprojectabg"
 		client = boto3.client('s3','us-west-2',aws_access_key_id=self.akey,aws_secret_access_key=self.skey)
 		# client.create_bucket(Bucket=buckname,CreateBucketConfiguration={'LocationConstraint':'us-west-2'})
-		client.upload_file('model.pkl', buckname, 'model.pkl')
+		# client.upload_file('model.pkl', buckname, 'model.pkl')
 
 #lskdjflskfdj
 if __name__=='__main__':

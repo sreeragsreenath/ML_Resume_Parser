@@ -1,7 +1,11 @@
 import subprocess
 import time
-commands = ["luigid","python3 manage.py runserver 0.0.0.0:8000","python3 luigi/luigi_pipeline.py uploadmodeltos3 --workers 2 --akey AKIAJX47MRD5AYURRMHA --skey 3ErYS0CYz0lJlCtRc76EIwIXHTjGH4bOlRewoVAO"]
+import sys
+
+print(sys.argv)
+commands = ["luigid","python manage.py runserver 0.0.0.0:8000","python luigi_pipeline.py uploadmodeltos3 --workers 2 --akey "+ sys.argv[0] +" --skey "+ sys.argv[0]]
 # commands = ["luigid"]
 
-for process in commands:
-	subprocess.Popen(process.split(" "),shell=True)
+subprocess.Popen(commands[0].split(" "))
+subprocess.Popen(commands[1].split(" "))
+subprocess.Popen(commands[2].split(" "), cwd='./luigi')

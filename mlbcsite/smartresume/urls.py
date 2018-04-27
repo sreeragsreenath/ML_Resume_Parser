@@ -11,5 +11,6 @@ urlpatterns = [
     path('register' , views.register, name='register'),
     path('statslocal' , views.statslocal, name='statslocal'),
     path('statsscrap' , views.statsscrap, name='statsscrap'),
+    path('recompute' , views.recompute, name='recompute'),
     path('logout_view' , views.logout_view, name='logout_view')
 ]

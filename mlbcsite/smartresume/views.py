@@ -9,10 +9,14 @@ from django import forms
 import PyPDF2
 import pickle
 import nltk
+import pandas as pd
 nltk.download('brown')
 nltk.download('punkt')
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
+import os
+import subprocess
+
 
 profiles = ["Software Developer","Web Developer","Java Developer","System Administrator","Software Engineer","QA Engineer","PHP Developer","Senior Software Engineer","Programmer","IT Specialist","Web Designer","Android Developer","C++ Software Developer","Python Developers","Data Analyst"]
 
@@ -32,6 +36,35 @@ def index(request):
 def about(request):
 	context = {'test': 'latest_question_list'}
 	return render(request, 'about.html', context)
+
+def recompute(request):
+	try:
+		os.remove("./luigi/model.pkl")
+	except Exception as e:
+	    print(e)
+	try:
+		os.remove("./luigi/data_job_posts.csv")
+	except Exception as e:
+	    print(e)
+	try:
+		os.remove("./luigi/online.json")
+	except Exception as e:
+	    print(e)
+	folder = './luigi/scraped'
+	for the_file in os.listdir(folder):
+	    file_path = os.path.join(folder, the_file)
+	    try:
+	        if os.path.isfile(file_path):
+	            os.unlink(file_path)
+	        #elif os.path.isdir(file_path): shutil.rmtree(file_path)
+	    except Exception as e:
+	        print(e)
+	commands = ["python luigi_pipeline.py uploadmodeltos3 --workers 2 --akey AKIAJX47MRD5AYURRMHA --skey 3ErYS0CYz0lJlCtRc76EIwIXHTjGH4bOlRewoVAO"]
+	for process in commands:
+		print(process.split(" "))
+		subprocess.Popen(process.split(" "), cwd='./luigi')
+	print("File Removed!")
+	return HttpResponse("Process triggered")
 
 # def login(request):
 # 	context = {'lol': 'latest_question_list'}
@@ -66,10 +99,15 @@ def upload_file(request):
 			rank.append(ar)
 		rank = sorted(rank, key=lambda x: x[1],reverse=True)
 		rank = rank[:5]
-		context['ranks'] = rank[:5]
+		context['ranks'] = rank[:3]
 		print(user.groups.all()[0])
 		context['user'] = user
 		context['isResults'] = True
+		f2 = pd.read_json('./smartresume/static/data/processed/latest.json', orient="records")
+		f2 = f2.loc[f2['Title'] == rank[0][0]]
+		listar = {'company','Title', 'job_page'}
+		context['search'] = f2.as_matrix(columns=listar)
+		print(context['search'])
 		return render(request, 'upload_file.html', context)
 	else:
 		form = UploadFileForm()
