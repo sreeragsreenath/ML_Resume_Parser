@@ -5,8 +5,16 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django import forms
-import PyPDF2
 
+import PyPDF2
+import pickle
+import nltk
+nltk.download('brown')
+nltk.download('punkt')
+from textblob import TextBlob
+from textblob.classifiers import NaiveBayesClassifier
+
+profiles = ["Software Developer","Web Developer","Java Developer","System Administrator","Software Engineer","QA Engineer","PHP Developer","Senior Software Engineer","Programmer","IT Specialist","Web Designer","Android Developer","C++ Software Developer","Python Developers","Data Analyst"]
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)
@@ -35,19 +43,33 @@ def about(request):
 
 def upload_file(request):
 	context = {'test': 'latest_question_list'}
+	context['isResults'] = False
 	user= request.user
 	context['role'] = request.user.groups.all()[0]
 	if request.method == 'POST':
 		myfile = request.FILES['file']
-		print(myfile)
+		file = open('./smartresume/static/models/model.pkl','rb')
+		cl = pickle.load(file)
 		pdfFileObj = myfile
 		pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
 		pdfReader.numPages
 		pageObj = pdfReader.getPage(0)  
 		text = pageObj.extractText()
+		blob = TextBlob(text)
+		blob.noun_phrases
+		text = ' '.join(blob.noun_phrases)
+		print(cl.classify(text))
+		prob_dist = cl.prob_classify(text)
+		rank = []
+		for k in profiles:
+			ar = [k,prob_dist.prob(k)]
+			rank.append(ar)
+		rank = sorted(rank, key=lambda x: x[1],reverse=True)
+		rank = rank[:5]
+		context['ranks'] = rank[:5]
 		print(user.groups.all()[0])
 		context['user'] = user
-		
+		context['isResults'] = True
 		return render(request, 'upload_file.html', context)
 	else:
 		form = UploadFileForm()
