@@ -31,16 +31,20 @@ import os
 
 
 class S3_DataIngestion(luigi.Task):
+	akey=luigi.Parameter()
+	skey=luigi.Parameter()
 	def requires(self):
 		return None
 
 	def run(self):
-		aws_access_key_id = "AKIAJX47MRD5AYURRMHA"
-		aws_secret_access_key = "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"
+		akey=luigi.Parameter()
+		skey=luigi.Parameter()
+		aws_access_key_id = akey
+		aws_secret_access_key = skey
 
 		s3 = boto3.resource('s3')
 		buckname="finalprojectabg"
-		client = boto3.client('s3','us-west-2',aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
+		client = boto3.client('s3','us-west-2',aws_access_key_id=self.akey,aws_secret_access_key=self.skey)
 		i = 0
 		for k in client.list_objects(Bucket=buckname)['Contents']:
 			if "scraped" in k['Key']:
@@ -61,7 +65,7 @@ class S3_DataIngestion(luigi.Task):
 				r = pd.read_json("./scraped/"+str(k), lines=True)
 				q=r.copy()
 			u=u+1
-		q.to_json(self.output().path , index=False)
+		q.to_json(self.output().path, orient="records")
 
 	def output(self):
 		return luigi.LocalTarget("online.json")
@@ -80,15 +84,16 @@ class Train_DataIngestion(luigi.Task):
 # Data Cleaning and processing
 
 class DataPreProcessing(luigi.Task):
-	
+	akey=luigi.Parameter()
+	skey=luigi.Parameter()
 	def requires(self):
 		yield Train_DataIngestion()
-		yield S3_DataIngestion()
+		yield S3_DataIngestion(akey=self.akey, skey=self.skey)
 
 
 	def run(self):
 		fb = pd.read_csv(Train_DataIngestion().output().path)
-		f2 = pd.read_csv(S3_DataIngestion().output().path)
+		f2 = pd.read_csv(S3_DataIngestion(akey=self.akey, skey=self.skey).output().path)
 		trainingData = fb
 		print("In Data Pre Processing")
 		profiles = ["Software Developer","Web Developer","Java Developer","System Administrator","Software Engineer","QA Engineer","PHP Developer","Senior Software Engineer","Programmer","IT Specialist","Web Designer","Android Developer","C++ Software Developer","Python Developers","Data Analyst"]
@@ -114,7 +119,7 @@ class uploadmodeltos3(luigi.Task):
 	akey=luigi.Parameter()
 	skey=luigi.Parameter()
 	def requires(self):
-		yield DataPreProcessing()
+		yield DataPreProcessing(akey=self.akey, skey=self.skey)
 	def run(self):
 		if str(self.akey) == "1" or str(self.skey) == "1":
 			print("Enter the AWS keys and try again")
@@ -124,7 +129,7 @@ class uploadmodeltos3(luigi.Task):
 		buckname="finalprojectabg"
 		client = boto3.client('s3','us-west-2',aws_access_key_id=self.akey,aws_secret_access_key=self.skey)
 		# client.create_bucket(Bucket=buckname,CreateBucketConfiguration={'LocationConstraint':'us-west-2'})
-		# client.upload_file('model.pkl', buckname, 'model.pkl')
+		client.upload_file('model.pkl', buckname, 'model.pkl')
 
 #lskdjflskfdj
 if __name__=='__main__':
