@@ -12,6 +12,7 @@ class IndeedSpider(scrapy.Spider):
     def start_requests(self):
         position = self.position
         location = self.location
+        position_text = position 
         position = position.replace(" ", "+")
         location = location.replace(" ", "%2C+")
 
@@ -19,7 +20,7 @@ class IndeedSpider(scrapy.Spider):
             'https://www.indeed.com/jobs?q='+position+'&l='+location,
         ]
         for url in urls:
-            yield scrapy.Request(url=url, callback=self.parse,  meta={'position': position})
+            yield scrapy.Request(url=url, callback=self.parse,  meta={'position': position_text})
 
     def parse(self, response):
         position = response.meta['position']
