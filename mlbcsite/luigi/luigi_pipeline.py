@@ -93,13 +93,19 @@ class DataPreProcessing(luigi.Task):
 
 	def run(self):
 		fb = pd.read_csv(Train_DataIngestion().output().path)
-		f2 = pd.read_csv(S3_DataIngestion(akey=self.akey, skey=self.skey).output().path)
+		f2 = pd.read_json(S3_DataIngestion(akey=self.akey, skey=self.skey).output().path, orient="records")
 		trainingData = fb
 		print("In Data Pre Processing")
 		profiles = ["Software Developer","Web Developer","Java Developer","System Administrator","Software Engineer","QA Engineer","PHP Developer","Senior Software Engineer","Programmer","IT Specialist","Web Designer","Android Developer","C++ Software Developer","Python Developers","Data Analyst"]
 
 		select_position = trainingData.loc[trainingData['Title'].isin(profiles)]
 		train = select_position[['jobpost','Title']]
+		print(f2)
+		f2 = f2.rename(index=str, columns={"job_desc": "jobpost", "position": "Title"})
+		select_position2 = f2.loc[f2['Title'].isin(profiles)]
+		train2 = select_position2[['jobpost','Title']]
+
+		train = train.append(train2)
 		cl = NaiveBayesClassifier(train.values)
 		cl_model = cl
 		outFile = open(self.output().path, 'wb')
