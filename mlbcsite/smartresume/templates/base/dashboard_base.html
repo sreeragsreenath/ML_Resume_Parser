@@ -73,38 +73,20 @@
                 </div>
                 <div class="col col s8 m8 l8">
                     <ul id="profile-dropdown" class="dropdown-content">
-                        <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
+                        <!-- <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
                         </li>
                         <li><a href="#"><i class="mdi-action-settings"></i> Settings</a>
-                        </li>
+                        </li> -->
                         <li class="divider"></li>
-                        <li><a href="/logout"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
+                        <li><a href="/logout_view"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
                         </li>
                     </ul>
-                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">{{data.auth.userName}}<i class="mdi-navigation-arrow-drop-down right"></i></a>
-                    <p class="user-roal">{{data.auth.name}}</p>
+                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">{{user.username}}<i class="mdi-navigation-arrow-drop-down right"></i></a>
+                    <p class="user-roal">{{role}}</p>
                 </div>
             </div>
             </li>
-            <li class="bold"><a href="/smartresume/index" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i>Home</a>
-            </li>
-            <li class="no-padding">
-                <ul class="collapsible collapsible-accordion">
-                    <li class="bold"><a class="collapsible-header waves-effect waves-cyan"><i class="mdi-action-view-carousel"></i> Application</a>
-                        <div class="collapsible-body">
-                            <ul>
-                                <li><a href="/singledata">Data Input</a>
-                                </li>
-    
-                                <li><a href="/singlefile">File Upload</a>
-                                 
-                                </li>
-                                <li><a href="/batchfile">Batch File Upload</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
+            <li class="bold"><a href="/admin"  target=_blank class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i>Admin</a>
             </li>
             
         </ul>
