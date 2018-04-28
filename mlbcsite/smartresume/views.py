@@ -59,7 +59,7 @@ def recompute(request):
 	        #elif os.path.isdir(file_path): shutil.rmtree(file_path)
 	    except Exception as e:
 	        print(e)
-	commands = ["python3 luigi_pipeline.py uploadmodeltos3 --workers 2 --akey AKIAJX47MRD5AYURRMHA --skey 3ErYS0CYz0lJlCtRc76EIwIXHTjGH4bOlRewoVAO"]
+	commands = ["python luigi_pipeline.py uploadmodeltos3 --workers 2 --akey AKIAJX47MRD5AYURRMHA --skey 3ErYS0CYz0lJlCtRc76EIwIXHTjGH4bOlRewoVAO"]
 	for process in commands:
 		print(process.split(" "))
 		subprocess.Popen(process.split(" "), cwd='./luigi')
