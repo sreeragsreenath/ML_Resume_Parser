@@ -68,4 +68,8 @@ Seaborn, Numpy, MissingNo, Pickle, Plotly, Pandas, Scipy, Sklearn, Matplotlib
 2. Process Followed : Data Ingestion, Data Wrangling, Exploratory Data Analysis
 3. Tools used :  Jupyter Notebook
 
+## Conclusion
+
+Our website will show you the Preferred Job Postings as well as the Positions one should apply.
+
 
