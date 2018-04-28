@@ -58,9 +58,9 @@ class S3_DataIngestion(luigi.Task):
 			if(u!=1):
 				print('scraped/'+str(k))
 				r = pd.read_json("./scraped/"+str(k), lines=True)
-				print(r)
+				# print(r)
 				q = q.append(r)
-				print(q)
+				# print(q)
 			else:
 				r = pd.read_json("./scraped/"+str(k), lines=True)
 				q=r.copy()
@@ -74,8 +74,8 @@ class Train_DataIngestion(luigi.Task):
 	def requires(self):
 		return None
 	def run(self):
-		trainingData= pd.read_csv("../smartresume/static/data/raw/data_job_posts.csv")
-		trainingData.to_csv(self.output().path, index=False)
+		trainingData= pd.read_csv("../smartresume/static/data/raw/data_job_posts.csv",encoding = 'utf8')
+		trainingData.to_csv(self.output().path, index=False, encoding = 'utf8')
 	def output(self):
 		return luigi.LocalTarget("data_job_posts.csv")
 
@@ -92,15 +92,15 @@ class DataPreProcessing(luigi.Task):
 
 
 	def run(self):
-		fb = pd.read_csv(Train_DataIngestion().output().path)
-		f2 = pd.read_json(S3_DataIngestion(akey=self.akey, skey=self.skey).output().path, orient="records")
+		fb = pd.read_csv(Train_DataIngestion().output().path, encoding = 'utf8')
+		f2 = pd.read_json(S3_DataIngestion(akey=self.akey, skey=self.skey).output().path, orient="records", encoding = 'utf8')
 		trainingData = fb
 		print("In Data Pre Processing")
 		profiles = ["Software Developer","Web Developer","Java Developer","System Administrator","Software Engineer","QA Engineer","PHP Developer","Senior Software Engineer","Programmer","IT Specialist","Web Designer","Android Developer","C++ Software Developer","Python Developers","Data Analyst"]
 
 		select_position = trainingData.loc[trainingData['Title'].isin(profiles)]
 		train = select_position[['jobpost','Title']]
-		print(f2)
+		# print(f2)
 		f2 = f2.rename(index=str, columns={"job_desc": "jobpost", "position": "Title"})
 		select_position2 = f2.loc[f2['Title'].isin(profiles)]
 		train2 = select_position2[['jobpost','Title']]

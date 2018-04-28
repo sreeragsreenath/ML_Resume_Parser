@@ -14,3 +14,9 @@ RUN pip3 install nltk
 RUN pip3 install textblob
 RUN pip3 install boto3
 COPY mlbcsite/. /mlbcsite
+
+# WORKDIR /mlbcsite
+
+ENV awsidn 1
+ENV awskeyn 1
+# CMD ["python3" , "sunprocess.py" , "--awsid", "${awsidn}" , "--awskey", "${awskeyn}"] 
