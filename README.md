@@ -4,6 +4,11 @@ Luigi Link - http://ec2-52-32-210-114.us-west-2.compute.amazonaws.com:8082/
 
 Project Link - http://ec2-52-32-210-114.us-west-2.compute.amazonaws.com:8000/
 
+# Steps to execute docker
+docker run -it -p 8000:8000 -p 8082:8082 sreeragsreenath/finalads
+cd mlbcsite/
+python3 sunprocess.py "aws s3 id" "aws s3 key"
+
 ## Introduction
 
 MLBC is a Web based platform for candidates who are seeking a job and recruiter who are looking for the right talent. The platform scrapes and analyzes publicly available job posting data from sites like Glassdoor, LinkedIn, etc. The system will recommend the candidate which job title will fit him/her based on their resume. The system will also give job links to the application form. The platform will also help us to gain statistical information about the latest job trend.
